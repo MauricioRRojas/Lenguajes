@@ -138,7 +138,7 @@ void printList(Node *head)
 
 int main()
 {
-    FILE *file= fopen("gramatica2.txt","r");
+    FILE *file= fopen("gramatica1.txt","r");
     if(file == NULL)
     {
         perror("Error openinh file");

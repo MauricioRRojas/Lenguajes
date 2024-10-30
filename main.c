@@ -31,16 +31,18 @@ Node* findNode(Node *head, const char *ruleIdentifier)
 }
 
 //Funcion to append a production to an existing node
-void appendProduction(Node *node, const char *production)
-{
-    //Allocate new space to hold the existing productions + new production + separator " | "
+void appendProduction(Node *node, const char *production) {
+    // Allocate new space to hold the existing productions + new production + separator " | "
     size_t newSize = strlen(node->productions) + strlen(production) + 4;
     node->productions = (char *)realloc(node->productions, newSize);
 
-    // Append the newproduction whit " | " separator
-    strcat(node->productions, " | ");
+    // Append the new production with " | " separator
+    if (strlen(node->productions) > 0) {
+        strcat(node->productions, " | ");
+    }
     strcat(node->productions, production);
 }
+
 
 //Funcion to aooend a new node or update an existing one
 void appendOrUpdateNode(Node **head, const char *ruleIdentifier, const char *production)
@@ -70,19 +72,18 @@ void appendOrUpdateNode(Node **head, const char *ruleIdentifier, const char *pro
 }
 
 //Function to free the  linked list
-void freeLinkedList(Node *head)
-{
+void freeLinkedList(Node *head) {
     Node *current = head;
     Node *nextNode;
-    while(current != NULL)
-    {
+    while (current != NULL) {
         nextNode = current->next;
-        free(current->ruleIdentifier); //Free the rule identifier string
-        free(current->productions);    //Free the production string
-        free(current);                 //Free the node
-        current = nextNode;
+        free(current->ruleIdentifier); // Free the rule identifier string
+        free(current->productions);    // Free the production string
+        free(current);                 // Free the node
+        current = nextNode;            // Move to the next node
     }
 }
+
 
 //Funtion to split a line into rule identifier and oridyction
 void splitLine(const char *line, char *ruleIdentifier, char *production)
@@ -112,7 +113,7 @@ Node* createLinkedList(FILE *file)
     while(fgets(line, sizeof(line), file))
     {
         //Remove the newline character if present
-        line[strcspn(line, "\n")]= '\0';
+        line[(strcspn(line, "\n")-1)]= '\0';
 
         //Split the line into rule ifentifier and production 
         splitLine(line, ruleIdentifier, production);
@@ -137,7 +138,7 @@ void printList(Node *head)
 
 int main()
 {
-    FILE *file= fopen("gramatica1.txt","r");
+    FILE *file= fopen("gramatica2.txt","r");
     if(file == NULL)
     {
         perror("Error openinh file");

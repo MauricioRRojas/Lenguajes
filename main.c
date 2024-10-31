@@ -4,7 +4,19 @@
 #include<stdlib.h>
 #include<string.h>
 
-
+//Funcion para imprimir el archivo
+void imprime_archivo(Node *head)
+{
+    Node *aux=head;
+    printf("Paso 1:\n");
+    while(aux!=NULL)
+    {
+        printf("%s -> %s \n",aux->ruleIdentifier, aux->productions);
+        aux=aux->next;
+    }
+    printf("-------------\n");
+}
+Node* 
 //Funtion to create a new node
 Node* createNode(const  char *ruleIdentifier, const char *production)
 {
@@ -108,7 +120,7 @@ Node* createLinkedList(FILE *file)
     char line[MAX_LINE_LENGTH];
     char ruleIdentifier[MAX_LINE_LENGTH];
     char production[MAX_LINE_LENGTH];
-
+    printf("Paso 2:\n");
     //Read the file line by line and store each line in a new node or update an existing one
     while(fgets(line, sizeof(line), file))
     {
@@ -146,7 +158,6 @@ int main()
     }
 
     Node *head= createLinkedList(file);
-
     fclose(file);
 
     //Ouput the contents of the linked list

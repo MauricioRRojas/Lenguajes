@@ -108,7 +108,7 @@ Node* createLinkedList(FILE *file)
     char line[MAX_LINE_LENGTH];
     char ruleIdentifier[MAX_LINE_LENGTH];
     char production[MAX_LINE_LENGTH];
-    printf("Paso 2:\n");
+    printf("Paso 1:\n");
     //Read the file line by line and store each line in a new node or update an existing one
     while(fgets(line, sizeof(line), file))
     {
@@ -175,6 +175,7 @@ int main()
     printf("-------\n");
 
     // Eliminar recursividad
+    printf("Paso 2:\n");
     elim_recur_desc(&head);
     printList(head);
 
@@ -182,4 +183,3 @@ int main()
     freeLinkedList(head);
     return 0;
 }
-//

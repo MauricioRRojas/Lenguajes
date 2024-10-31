@@ -161,7 +161,7 @@ Node* elim_recur_desc(Node **head) {
 
 int main()
 {
-    FILE *file = fopen("gramatica1.txt", "r");
+    FILE *file = fopen("gramatica3.txt", "r");
     if (file == NULL) {
         perror("Error opening file");
         return 1;

@@ -25,3 +25,5 @@ struct Node* findNode(struct Node *head, const char *ruleIdentifier);
 void appendProduction(struct Node *node, const char *production);
 void appendOrUpdateNode(struct Node **head, const char *ruleIdentifier, const char *production);
 Node* elim_recur_desc(Node **head);
+Node* elimRecArr2(Node **head);
+char* leeArch(FILE file);

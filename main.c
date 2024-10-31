@@ -76,7 +76,25 @@ void freeLinkedList(Node *head) {
         current = nextNode;            // Move to the next node
     }
 }
+char* leeArch(FILE *file) 
+{
+    fseek(file, 0, SEEK_END);
+    long tam = ftell(file);
+    rewind(file); 
 
+    char *contenido = (char *)malloc(tam + 1);
+    if (contenido == NULL) {
+        fclose(file);
+        return NULL; 
+    }
+
+    // Lee el contenido del archivo
+    fread(contenido, 1, tam, file);
+    contenido[tam] = '\0'; 
+    fseek(file,0,SEEK_SET);
+
+    return contenido; 
+}
 // Function to split a line into rule identifier and production
 void splitLine(const char *line, char *ruleIdentifier, char *production) {
     const char *delimiter = strstr(line, "->");
@@ -139,21 +157,23 @@ int main() {
         perror("Error opening file");
         return 1;
     }
+    char* arch=leeArch(file);
+    printf("Reglas:\n");
+    printf("%s",arch);
+    printf("\n");
 
     Node *head = createLinkedList(file);
     fclose(file);
 
-    // Output the contents of the linked list
+    printf("Paso 1:\n");
     printList(head);
     printf("-------\n");
 
-    // Eliminar recursividad
     printf("Paso 2:\n");
     elim_recur_desc(&head);
     printList(head);
     printf("-------\n");
 
-    // Free the linked list
     freeLinkedList(head);
     return 0;
 }

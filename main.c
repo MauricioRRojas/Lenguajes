@@ -5,18 +5,16 @@
 #include<string.h>
 
 //Funcion para imprimir el archivo
-void imprime_archivo(Node *head)
+void imprime_archivo(struct Node *head)
 {
-    Node *aux=head;
-    printf("Paso 1:\n");
+    struct Node *aux=head;
     while(aux!=NULL)
     {
         printf("%s -> %s \n",aux->ruleIdentifier, aux->productions);
         aux=aux->next;
     }
     printf("-------------\n");
-}
-Node* 
+} 
 //Funtion to create a new node
 Node* createNode(const  char *ruleIdentifier, const char *production)
 {

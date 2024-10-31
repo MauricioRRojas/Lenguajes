@@ -13,15 +13,15 @@ typedef struct Node
 	struct Node *ant;
 }Node;
 
-Node * createNode(const char *ruleIdentifier, const char *production);
-void appendNode(Node **head, const char *ruleIdentifier, const char *prouction);
-void freelinkedlist(Node *head);
-Node * createLinkedList(FILE *file);
-void printList(Node *head);
+struct Node * createNode(const char *ruleIdentifier, const char *production);
+void appendNode(struct Node **head, const char *ruleIdentifier, const char *prouction);
+void freelinkedlist(struct Node *head);
+struct Node * createLinkedList(FILE *file);
+void printList(struct Node *head);
 
 void splitLine(const char *line, char *ruleIdentifier, char *production);
 
-Node* findNode(Node *head, const char *ruleIdentifier);
-void appendProduction(Node *node, const char *production);
-void appendOrUpdateNode(Node **head, const char *ruleIdentifier, const char *production);
-void imprime_archivo(Node *head);
+struct Node* findNode(struct Node *head, const char *ruleIdentifier);
+void appendProduction(struct Node *node, const char *production);
+void appendOrUpdateNode(struct Node **head, const char *ruleIdentifier, const char *production);
+void imprime_archivo(struct Node *head);

@@ -3,18 +3,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
-//Funcion para imprimir el archivo
-void imprime_archivo(struct Node *head)
-{
-    struct Node *aux=head;
-    while(aux!=NULL)
-    {
-        printf("%s -> %s \n",aux->ruleIdentifier, aux->productions);
-        aux=aux->next;
-    }
-    printf("-------------\n");
-} 
+ 
 //Funtion to create a new node
 Node* createNode(const  char *ruleIdentifier, const char *production)
 {
@@ -22,6 +11,7 @@ Node* createNode(const  char *ruleIdentifier, const char *production)
     newNode->ruleIdentifier = strdup(ruleIdentifier); //store rule identifier
     newNode->productions = strdup(production);        //store production
     newNode->next = NULL;
+    newNode->ant = NULL;
     return newNode;
 }
 
@@ -145,23 +135,50 @@ void printList(Node *head)
         current = current->next;
     }
 }
+//Funcion para eliminar la recursividad
+Node* elim_recur_desc(Node **head) {
+    Node* aux = *head;
+    char auxA[MAX_LINE_LENGTH], auxD[MAX_LINE_LENGTH];
+
+    while (aux != NULL) {
+        char *pos = strstr(aux->productions, aux->ruleIdentifier);
+        if (pos != NULL) {
+            // Parte antes de la regla
+            strncpy(auxA, aux->productions, pos - aux->productions);
+            auxA[pos - aux->productions] = '\0'; // NULL-terminate
+
+            // Parte después de la regla
+            strcpy(auxD, pos + strlen(aux->ruleIdentifier));
+
+            // Formar la nueva producción
+            sprintf(aux->productions, "{%s}%s", auxA, auxD);
+        }
+        aux = aux->next; // Moverse al siguiente nodo
+    }
+    return *head;
+}
+
 
 int main()
 {
-    FILE *file= fopen("gramatica1.txt","r");
-    if(file == NULL)
-    {
-        perror("Error openinh file");
+    FILE *file = fopen("gramatica1.txt", "r");
+    if (file == NULL) {
+        perror("Error opening file");
         return 1;
     }
 
-    Node *head= createLinkedList(file);
+    Node *head = createLinkedList(file);
     fclose(file);
 
-    //Ouput the contents of the linked list
+    // Output the contents of the linked list
+    printList(head);
+    printf("-------\n");
+
+    // Eliminar recursividad
+    elim_recur_desc(&head);
     printList(head);
 
-    //Free the linked list
+    // Free the linked list
     freeLinkedList(head);
     return 0;
 }

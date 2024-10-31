@@ -24,4 +24,4 @@ void splitLine(const char *line, char *ruleIdentifier, char *production);
 struct Node* findNode(struct Node *head, const char *ruleIdentifier);
 void appendProduction(struct Node *node, const char *production);
 void appendOrUpdateNode(struct Node **head, const char *ruleIdentifier, const char *production);
-void imprime_archivo(struct Node *head);
+Node* elim_recur_desc(Node **head);

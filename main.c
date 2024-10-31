@@ -1,77 +1,70 @@
-#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
- 
-//Funtion to create a new node
-Node* createNode(const  char *ruleIdentifier, const char *production)
-{
-	Node *newNode = (Node *)malloc(sizeof(Node));
-    newNode->ruleIdentifier = strdup(ruleIdentifier); //store rule identifier
-    newNode->productions = strdup(production);        //store production
+#define MAX_LINE_LENGTH 256
+
+typedef struct Node {
+    char *ruleIdentifier;
+    char *productions;
+    struct Node *next;
+    struct Node *prev; // Puntero al nodo anterior
+} Node;
+
+// Funtion to create a new node
+Node* createNode(const char *ruleIdentifier, const char *production) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->ruleIdentifier = strdup(ruleIdentifier); // store rule identifier
+    newNode->productions = strdup(production);        // store production
     newNode->next = NULL;
-    newNode->ant = NULL;
+    newNode->prev = NULL; // Inicializa el puntero anterior a NULL
     return newNode;
 }
 
-//Funtion to find a node by rule identifier
-Node* findNode(Node *head, const char *ruleIdentifier)
-{
-    Node *current=head;
-    while(current != NULL)
-    {
-        if(strcmp(current->ruleIdentifier, ruleIdentifier) == 0)
-        {
-            return current; //Return the node if found
+// Funtion to find a node by rule identifier
+Node* findNode(Node *head, const char *ruleIdentifier) {
+    Node *current = head;
+    while (current != NULL) {
+        if (strcmp(current->ruleIdentifier, ruleIdentifier) == 0) {
+            return current; // Return the node if found
         }
         current = current->next;
     }
-    return NULL; //Return NULL if not  foundby
+    return NULL; // Return NULL if not found
 }
 
-//Funcion to append a production to an existing node
+// Function to append a production to an existing node
 void appendProduction(Node *node, const char *production) {
-    // Allocate new space to hold the existing productions + new production + separator " | "
     size_t newSize = strlen(node->productions) + strlen(production) + 4;
     node->productions = (char *)realloc(node->productions, newSize);
 
-    // Append the new production with " | " separator
     if (strlen(node->productions) > 0) {
         strcat(node->productions, " | ");
     }
     strcat(node->productions, production);
 }
 
-
-//Funcion to aooend a new node or update an existing one
-void appendOrUpdateNode(Node **head, const char *ruleIdentifier, const char *production)
-{
-    Node *existingNode = findNode(*head,ruleIdentifier);
-    if(existingNode != NULL)
-    {
-        appendProduction(existingNode, production); //If found, append the production 
-    }
-    else
-    {
-        Node *newNode = createNode(ruleIdentifier, production); //Create a new node
-        if(*head == NULL)
-        {
-            *head= newNode; //If the list is empty, set the head
-        }
-        else
-        {
-            Node *temp= *head;
-            while(temp->next != NULL)
-            {
-                temp= temp->next;
+// Function to append a new node or update an existing one
+void appendOrUpdateNode(Node **head, const char *ruleIdentifier, const char *production) {
+    Node *existingNode = findNode(*head, ruleIdentifier);
+    if (existingNode != NULL) {
+        appendProduction(existingNode, production); // If found, append the production 
+    } else {
+        Node *newNode = createNode(ruleIdentifier, production); // Create a new node
+        if (*head == NULL) {
+            *head = newNode; // If the list is empty, set the head
+        } else {
+            Node *temp = *head;
+            while (temp->next != NULL) {
+                temp = temp->next;
             }
-            temp->next= newNode; //Add the new node to the end of the list
+            temp->next = newNode; // Add the new node to the end of the list
+            newNode->prev = temp; // Set the previous pointer of the new node
         }
     }
 }
 
-//Function to free the  linked list
+// Function to free the linked list
 void freeLinkedList(Node *head) {
     Node *current = head;
     Node *nextNode;
@@ -84,58 +77,40 @@ void freeLinkedList(Node *head) {
     }
 }
 
-
-//Funtion to split a line into rule identifier and oridyction
-void splitLine(const char *line, char *ruleIdentifier, char *production)
-{
-    //Find the position of "->"in the line
-    const char *delimiter= strstr(line, "->");
-    if(delimiter != NULL)
-    {
-        //copy the part before "->" into ruleIdentifire
+// Function to split a line into rule identifier and production
+void splitLine(const char *line, char *ruleIdentifier, char *production) {
+    const char *delimiter = strstr(line, "->");
+    if (delimiter != NULL) {
         strncpy(ruleIdentifier, line, delimiter - line);
-        ruleIdentifier[delimiter - line] = '\0'; //NULL-terminate the identifier
-
-        //copy the part after "->" into production
-        strcpy(production, delimiter + 2); //Skip the "->"
+        ruleIdentifier[delimiter - line] = '\0'; // NULL-terminate the identifier
+        strcpy(production, delimiter + 2); // Skip the "->"
     }
 }
 
-//Function to create a linked list from the file
-Node* createLinkedList(FILE *file)
-{
-    Node *head= NULL; //Head of the linked list
+// Function to create a linked list from the file
+Node* createLinkedList(FILE *file) {
+    Node *head = NULL; // Head of the linked list
     char line[MAX_LINE_LENGTH];
     char ruleIdentifier[MAX_LINE_LENGTH];
     char production[MAX_LINE_LENGTH];
-    printf("Paso 1:\n");
-    //Read the file line by line and store each line in a new node or update an existing one
-    while(fgets(line, sizeof(line), file))
-    {
-        //Remove the newline character if present
-        line[(strcspn(line, "\n")-1)]= '\0';
-
-        //Split the line into rule ifentifier and production 
+    while (fgets(line, sizeof(line), file)) {
+        line[strcspn(line, "\n")-1] = '\0'; // Remove the newline character if present
         splitLine(line, ruleIdentifier, production);
-
-        //Append or update the node in the linked list
         appendOrUpdateNode(&head, ruleIdentifier, production);
     }
-
     return head;
 }
 
-//Funtion to print the linked list
-void printList(Node *head)
-{
+// Function to print the linked list
+void printList(Node *head) {
     Node *current = head;
-    while(current != NULL)
-    {
+    while (current != NULL) {
         printf("%s -> %s\n", current->ruleIdentifier, current->productions);
         current = current->next;
     }
 }
-//Funcion para eliminar la recursividad
+
+// Function to eliminate recursion in productions
 Node* elim_recur_desc(Node **head) {
     Node* aux = *head;
     char auxA[MAX_LINE_LENGTH], auxD[MAX_LINE_LENGTH];
@@ -158,9 +133,7 @@ Node* elim_recur_desc(Node **head) {
     return *head;
 }
 
-
-int main()
-{
+int main() {
     FILE *file = fopen("gramatica3.txt", "r");
     if (file == NULL) {
         perror("Error opening file");
@@ -179,7 +152,6 @@ int main()
     elim_recur_desc(&head);
     printList(head);
     printf("-------\n");
-    printf("Paso 3: \n");
 
     // Free the linked list
     freeLinkedList(head);

@@ -10,6 +10,7 @@ typedef struct Node
 	char *ruleIdentifier;
 	char *productions;
 	struct Node *next;
+	struct Node *ant;
 }Node;
 
 Node * createNode(const char *ruleIdentifier, const char *production);

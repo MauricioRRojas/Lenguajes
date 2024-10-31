@@ -178,7 +178,7 @@ int main()
     printf("Paso 2:\n");
     elim_recur_desc(&head);
     printList(head);
-    printf("-------");
+    printf("-------\n");
     printf("Paso 3: \n");
 
     // Free the linked list
